@@ -7,14 +7,14 @@ import (
 	"net"
 	"sync"
 
-	"github.com/WeAreInSpace/Gopher-Runner-server/packet"
+	"github.com/WeAreInSpace/Dot-IO"
 )
 
-func HandleConn(conn net.Conn) (ib packet.Inbound, og packet.Outgoing) {
-	ib = packet.Inbound{
+func HandleConn(conn net.Conn) (ib dotio.Inbound, og dotio.Outgoing) {
+	ib = dotio.Inbound{
 		Conn: conn,
 	}
-	og = packet.Outgoing{
+	og = dotio.Outgoing{
 		Conn: conn,
 	}
 	return ib, og
@@ -24,8 +24,8 @@ type PacketManager struct {
 	Mx *sync.Mutex
 
 	Conn net.Conn
-	Ib   *packet.Inbound
-	Og   *packet.Outgoing
+	Ib   *dotio.Inbound
+	Og   *dotio.Outgoing
 }
 
 type Player struct {
@@ -54,7 +54,7 @@ func (pm *PacketManager) HandleClientConn() {
 			motd := pm.Og.Write()
 			motd.WriteString("Welcome to gopher runner server")
 			motd.WriteString("By We Are In Space")
-			motd.Sent(packet.WriteInt32(2))
+			motd.Sent(dotio.WriteInt32(2))
 			continue
 		}
 
@@ -79,7 +79,7 @@ func (pm *PacketManager) HandleClientConn() {
 			}
 
 			loginRes := pm.Og.Write()
-			loginRes.Sent(packet.WriteInt32(0))
+			loginRes.Sent(dotio.WriteInt32(0))
 
 			playE := pm.Play(&player)
 			if playE != nil {
