@@ -7,7 +7,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/WeAreInSpace/Dot-IO"
+	"github.com/WeAreInSpace/dotio"
 )
 
 func HandleConn(conn net.Conn) (ib dotio.Inbound, og dotio.Outgoing) {
@@ -103,13 +103,19 @@ func (pm *PacketManager) Play(player *Player) error {
 		}
 
 		if playId == 1 {
-			playerPosId, playerPos, playerPosE := pm.Ib.Read()
+			_, playerPos, playerPosE := pm.Ib.Read()
 			if playerPosE != nil {
 				return playerPosE
 			}
-			getX := playerPos.ReadInt64()
-			getY := playerPos.ReadInt64()
-			log.Println(playerPosId, getX, getY)
+			getX := playerPos.ReadFloat64()
+			getY := playerPos.ReadFloat64()
+			log.Println(getX, getY)
+		} else if playId == 2 {
+			_, playerShift, playerShiftE := pm.Ib.Read()
+			if playerShiftE != nil {
+				return playerShiftE
+			}
+			playerShift.ReadInt64()
 		} else {
 			break
 		}
